@@ -59,29 +59,11 @@
     │   ├── cli.py
     │   └── utils.py
     ├── main.py
+    ├── readme-ai.md
     ├── requirnments.txt
     ├── setup.py
-    ├── templates
-    │   └── index.html
-    └── templinkmaker
-        ├── .editorconfig
-        ├── .github
-        ├── .gitignore
-        ├── .travis.yml
-        ├── AUTHORS.rst
-        ├── CODE_OF_CONDUCT.rst
-        ├── CONTRIBUTING.rst
-        ├── HISTORY.rst
-        ├── LICENSE
-        ├── MANIFEST.in
-        ├── Makefile
-        ├── README.rst
-        ├── docs
-        ├── pyproject.toml
-        ├── requirements_dev.txt
-        ├── ruff.toml
-        ├── src
-        └── tox.ini
+    └── templates
+        └── index.html
 ```
 
 ---
@@ -95,33 +77,6 @@
 | [setup.py](https://github.com/sdidd/templinkMaker.git/blob/master/setup.py)                 | <code>► INSERT-TEXT-HERE</code> |
 | [requirnments.txt](https://github.com/sdidd/templinkMaker.git/blob/master/requirnments.txt) | <code>► INSERT-TEXT-HERE</code> |
 | [main.py](https://github.com/sdidd/templinkMaker.git/blob/master/main.py)                   | <code>► INSERT-TEXT-HERE</code> |
-
-</details>
-
-<details closed><summary>templinkmaker</summary>
-
-| File                                                                                                              | Summary                         |
-| ---                                                                                                               | ---                             |
-| [ruff.toml](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/ruff.toml)                       | <code>► INSERT-TEXT-HERE</code> |
-| [requirements_dev.txt](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/requirements_dev.txt) | <code>► INSERT-TEXT-HERE</code> |
-| [pyproject.toml](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/pyproject.toml)             | <code>► INSERT-TEXT-HERE</code> |
-| [README.rst](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/README.rst)                     | <code>► INSERT-TEXT-HERE</code> |
-| [Makefile](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/Makefile)                         | <code>► INSERT-TEXT-HERE</code> |
-| [MANIFEST.in](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/MANIFEST.in)                   | <code>► INSERT-TEXT-HERE</code> |
-| [HISTORY.rst](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/HISTORY.rst)                   | <code>► INSERT-TEXT-HERE</code> |
-| [CONTRIBUTING.rst](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/CONTRIBUTING.rst)         | <code>► INSERT-TEXT-HERE</code> |
-| [CODE_OF_CONDUCT.rst](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/CODE_OF_CONDUCT.rst)   | <code>► INSERT-TEXT-HERE</code> |
-| [AUTHORS.rst](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/AUTHORS.rst)                   | <code>► INSERT-TEXT-HERE</code> |
-| [.travis.yml](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/.travis.yml)                   | <code>► INSERT-TEXT-HERE</code> |
-
-</details>
-
-<details closed><summary>templinkmaker.src.templinkmaker</summary>
-
-| File                                                                                                                        | Summary                         |
-| ---                                                                                                                         | ---                             |
-| [templinkmaker.py](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/src/templinkmaker/templinkmaker.py) | <code>► INSERT-TEXT-HERE</code> |
-| [cli.py](https://github.com/sdidd/templinkMaker.git/blob/master/templinkmaker/src/templinkmaker/cli.py)                     | <code>► INSERT-TEXT-HERE</code> |
 
 </details>
 
