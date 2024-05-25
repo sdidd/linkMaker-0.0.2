@@ -5,13 +5,10 @@
     <h1 align="center">TEMPLINKMAKER</h1>
 </p>
 <p align="center">
-    <em><code>► INSERT-TEXT-HERE</code></em>
-</p>
-<p align="center">
 	<img src="https://img.shields.io/github/license/sdidd/templinkMaker.git?style=default&logo=opensourceinitiative&logoColor=white&color=0080ff" alt="license">
 	<img src="https://img.shields.io/github/last-commit/sdidd/templinkMaker.git?style=default&logo=git&logoColor=white&color=0080ff" alt="last-commit">
 	<img src="https://img.shields.io/github/languages/top/sdidd/templinkMaker.git?style=default&color=0080ff" alt="repo-top-language">
-	<img src="https://img.shields.io/github/languages/count/sdidd/templinkMaker.git?style=default&color=0080ff" alt="repo-language-count">
+	<a href="https://www.codefactor.io/repository/github/sdidd/templinkmaker"><img src="https://www.codefactor.io/repository/github/sdidd/templinkmaker/badge" alt="CodeFactor" /></a>
 <p>
 <p align="center">
 	<!-- default option, no dependency badges. -->
