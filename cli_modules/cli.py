@@ -1,56 +1,93 @@
+# cli_modules/cli.py
+
+import subprocess
+import fcntl
 import os
-import sys
+import multiprocessing
 import time
-import argparse
-from flask import Flask, send_from_directory, abort
-from werkzeug.utils import secure_filename
-from pyngrok import ngrok
+from daemon.pidfile import TimeoutPIDLockFile
+import daemon
+from cli_modules.utils import start_ngrok, store_pid, is_process_running, printUrls
+from cli_modules.app import app
 
-app = Flask(__name__)
-UPLOAD_FOLDER = 'uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+PID_FILE = os.path.join(os.path.dirname(__file__), 'flask_pid.txt')
+OUTPUT_FILE = os.path.join(os.path.dirname(__file__), 'output.log')
 
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+# start_ngrok()
+# app.run(host='0.0.0.0', port=5000)
+# printUrls()
+def start_ngrok_wrapper():
+    with open(OUTPUT_FILE, 'a') as f:
+        f.write("Starting ngrok...\n")
+    start_ngrok()
 
-@app.route('/download/<filename>', methods=['GET'])
-def download_file(filename):
-    filename = secure_filename(filename)
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    if os.path.exists(file_path):
-        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-    else:
-        abort(404)
+def start_flask_app():
+    with open(OUTPUT_FILE, 'a') as f:
+        f.write("Starting Flask app...\n")
+    app.run(host='0.0.0.0', port=5000)
 
-def create_temp_link(file_path):
-    filename = secure_filename(os.path.basename(file_path))
-    destination = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    os.rename(file_path, destination)
+def print_urls():
+    with open(OUTPUT_FILE, 'a') as f:
+        f.write("Printing URLs...\n")
+    printUrls()
 
-    # Start ngrok tunnel
-    public_url = ngrok.connect(5000)
-    print(f" * ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:5000\"")
+def start():
+    # Start ngrok in a subprocess
+    p1 = multiprocessing.Process(target=start_ngrok_wrapper)
+    p1.start()
 
-    return f"{public_url}/download/{filename}"
+    # Start Flask app in a subprocess
+    p2 = multiprocessing.Process(target=start_flask_app)
+    p2.start()
 
-def main():
-    parser = argparse.ArgumentParser(description='Create a temporary download link for a file.')
-    parser.add_argument('file', type=str, help='Path to the file')
-    args = parser.parse_args()
+    # Start printUrls in a subprocess
+    p3 = multiprocessing.Process(target=print_urls)
+    p3.start()
 
-    file_path = args.file
+    # Wait for user input to stop the subprocesses
+    input("Press Enter to stop the subprocesses...")
 
-    if not os.path.isfile(file_path):
-        print("File does not exist.")
-        sys.exit(1)
+    # Terminate the subprocesses
+    p1.terminate()
+    p2.terminate()
+    p3.terminate()
+# def start():
+#     if os.path.exists(PID_FILE):
+#         with open(PID_FILE, 'r') as f:
+#             pid = int(f.read().strip())
+#             if is_process_running(pid):
+#                 print("Flask server is already running." + endpoint)
+#                 return
 
-    # Create a temporary download link
-    link = create_temp_link(file_path)
-    print(f"Temporary download link: {link}")
+#     # Create output file if it doesn't exist
+#     if not os.path.exists(OUTPUT_FILE):
+#         open(OUTPUT_FILE, 'w').close
 
-    # Run Flask app
-    app.run(port=5000)
+#     context = daemon.DaemonContext(
+#         pidfile=TimeoutPIDLockFile(PID_FILE),
+#         working_directory=os.path.dirname(os.path.abspath(__file__)),
+#         stdout=open(OUTPUT_FILE, 'w+'),
+#         stderr=open(OUTPUT_FILE, 'w+'),
+#     )
 
-if __name__ == '__main__':
-    main()
+#     with context:
+#         start_ngrok()
+#         app.run(host='0.0.0.0', port=5000)
+#         printUrls()
+
+def stop():
+    print("Stopping Flask server...")
+    try:
+        with open(PID_FILE, 'r') as f:
+            flask_pid = int(f.read().strip())
+            os.kill(flask_pid, 15)  # Send SIGTERM signal
+            print("Flask server stopped.")
+    except FileNotFoundError:
+        print("Flask PID file not found. Flask server may not be running.")
+    except ProcessLookupError:
+        print("Flask server process not found. It may have already stopped.")
+    finally:
+        try:
+            os.remove(PID_FILE)  # Remove the PID file
+        except FileNotFoundError:
+            pass  # PID file may have been already removed
