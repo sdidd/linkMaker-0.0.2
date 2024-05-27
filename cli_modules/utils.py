@@ -4,14 +4,12 @@ import os
 import shutil
 import sqlite3
 import subprocess
-import fcntl
+# import fcntl
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 
 Storage_FOLDER = os.path.join(os.path.dirname(__file__), 'storage')
 DB_FILE = os.path.join(os.path.dirname(__file__), 'file_expiration.db')
-# Path to the PID file
-PID_FILE = os.path.join(os.path.dirname(__file__), 'flask_pid.txt')
 
 DEFAULT_EXPIRATION_TIME = 3600
 
@@ -45,8 +43,8 @@ def start_ngrok():
         ngrok_process = subprocess.Popen(["ngrok", "http", "--log=stdout", "http://localhost:5000"])
 
         # Set the stdout file descriptor to non-blocking mode
-        flags = fcntl.fcntl(ngrok_process.stdout.fileno(), fcntl.F_GETFL)
-        fcntl.fcntl(ngrok_process.stdout.fileno(), fcntl.F_SETFL, flags | os.O_NONBLOCK)
+        # flags = fcntl.fcntl(ngrok_process.stdout.fileno(), fcntl.F_GETFL)
+        # fcntl.fcntl(ngrok_process.stdout.fileno(), fcntl.F_SETFL, flags | os.O_NONBLOCK)
 
         print("Ngrok started successfully.")
     except Exception as e:
@@ -122,3 +120,18 @@ def printUrls():
             if "addr" in line:
                 url = line.strip().split()[-1]
                 print("Ngrok URL:", url)
+
+def ngrok_token(token):
+    try:
+        # Authenticate ngrok with the provided token
+        subprocess.run(["ngrok", "authtoken", token], check=True)
+        
+        # Set the NGROK_AUTH_TOKEN environment variable
+        os.environ["NGROK_AUTH_TOKEN"] = token
+        
+        print("ngrok token set successfully.")
+        
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred while setting the ngrok token: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}") 

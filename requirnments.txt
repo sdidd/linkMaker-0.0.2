@@ -1,4 +1,4 @@
 Flask 
 pyngrok 
 werkzeug
-localtunnel
+ngrok

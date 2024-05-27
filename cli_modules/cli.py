@@ -1,12 +1,12 @@
 # cli_modules/cli.py
 
 import subprocess
-import fcntl
+import signal
 import os
 import multiprocessing
 import time
-from daemon.pidfile import TimeoutPIDLockFile
-import daemon
+# from daemon.pidfile import TimeoutPIDLockFile
+# import daemon
 from cli_modules.utils import start_ngrok, store_pid, is_process_running, printUrls
 from cli_modules.app import app
 
@@ -32,6 +32,9 @@ def print_urls():
     printUrls()
 
 def start():
+    global p1, p2, p3
+    print("Press ctrl+C to terminate server")
+
     # Start ngrok in a subprocess
     p1 = multiprocessing.Process(target=start_ngrok_wrapper)
     p1.start()
@@ -44,36 +47,32 @@ def start():
     p3 = multiprocessing.Process(target=print_urls)
     p3.start()
 
-    # Wait for user input to stop the subprocesses
-    input("Press Enter to stop the subprocesses...")
+    # Register signal handlers
+    signal.signal(signal.SIGINT, terminate_processes)
+    signal.signal(signal.SIGTERM, terminate_processes)
+    
 
+    try:
+        # Wait indefinitely until termination signals are received
+        signal.pause()
+    except KeyboardInterrupt:
+        pass
+
+def terminate_processes(signum, frame):
+    print("Terminating subprocesses...")
     # Terminate the subprocesses
     p1.terminate()
     p2.terminate()
     p3.terminate()
-# def start():
-#     if os.path.exists(PID_FILE):
-#         with open(PID_FILE, 'r') as f:
-#             pid = int(f.read().strip())
-#             if is_process_running(pid):
-#                 print("Flask server is already running." + endpoint)
-#                 return
 
-#     # Create output file if it doesn't exist
-#     if not os.path.exists(OUTPUT_FILE):
-#         open(OUTPUT_FILE, 'w').close
+    # Join subprocesses to ensure they are fully terminated
+    p1.join()
+    p2.join()
+    p3.join()
 
-#     context = daemon.DaemonContext(
-#         pidfile=TimeoutPIDLockFile(PID_FILE),
-#         working_directory=os.path.dirname(os.path.abspath(__file__)),
-#         stdout=open(OUTPUT_FILE, 'w+'),
-#         stderr=open(OUTPUT_FILE, 'w+'),
-#     )
-
-#     with context:
-#         start_ngrok()
-#         app.run(host='0.0.0.0', port=5000)
-#         printUrls()
+    # Exit the main process
+    print("All subprocesses terminated.")
+    exit(0)
 
 def stop():
     print("Stopping Flask server...")
